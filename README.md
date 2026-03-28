@@ -1,5 +1,12 @@
 # EMS — веб-приложение для CSV (freq / ampl)
 
+Репозиторий: [github.com/nickitabogdanow/EMS](https://github.com/nickitabogdanow/EMS)
+
+```bash
+git clone https://github.com/nickitabogdanow/EMS.git
+cd EMS
+```
+
 Веб-интерфейс на **FastAPI** для загрузки спектров в формате CSV (колонки `freq`, `ampl`): **вычитание** двух кривых, **объединение** по частоте, интерактивные **графики Plotly**, выгрузка результата и HTML.
 
 ## Возможности
@@ -20,7 +27,7 @@
 ## Быстрый старт (локально)
 
 ```bash
-cd ems
+cd EMS   # или каталог, куда вы склонировали проект
 python3 -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
