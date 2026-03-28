@@ -198,6 +198,10 @@
     fd.append("show_a", document.getElementById("chk-a").checked ? "true" : "false");
     fd.append("show_b", document.getElementById("chk-b").checked ? "true" : "false");
     fd.append("show_result", document.getElementById("chk-result").checked ? "true" : "false");
+    fd.append(
+      "full_resolution_plot",
+      document.getElementById("chk-full-plot").checked ? "true" : "false"
+    );
 
     if (isMergeMode()) {
       fd.append("duplicate_policy", document.getElementById("dup-policy").value);
@@ -273,7 +277,9 @@
     }
 
     let plotNote = "";
-    if (data.plot_decimated) {
+    if (data.plot_full_resolution) {
+      plotNote = " <strong>График показан без прореживания</strong>: на график отправлены все точки.";
+    } else if (data.plot_decimated) {
       plotNote =
         " <strong>График упрощён</strong> для скорости (до ~" +
         (data.plot_trace_points ?? "?") +

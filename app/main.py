@@ -51,6 +51,7 @@ def create_app() -> FastAPI:
         show_b: str | bool = Form("false"),
         show_result: str | bool = Form("true"),
         highlight_threshold: str | float = Form("5"),
+        full_resolution_plot: str | bool = Form("false"),
     ):
         if operation not in ("a_minus_b", "b_minus_a"):
             raise HTTPException(status_code=400, detail="operation must be a_minus_b or b_minus_a")
@@ -68,6 +69,8 @@ def create_app() -> FastAPI:
         except UnicodeDecodeError as e:
             raise HTTPException(status_code=400, detail="Файлы должны быть в UTF-8") from e
 
+        full_plot = _form_bool(full_resolution_plot)
+
         try:
             payload = build_subtract_response(
                 raw_a,
@@ -77,7 +80,8 @@ def create_app() -> FastAPI:
                 show_b=sb,
                 show_result=sr,
                 highlight_threshold=_parse_highlight_threshold(highlight_threshold),
-                max_plot_points=max_plot_points(),
+                max_plot_points=0 if full_plot else max_plot_points(),
+                full_resolution_plot=full_plot,
             )
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e)) from e
@@ -92,6 +96,7 @@ def create_app() -> FastAPI:
         show_a: str | bool = Form("false"),
         show_b: str | bool = Form("false"),
         show_result: str | bool = Form("true"),
+        full_resolution_plot: str | bool = Form("false"),
     ):
         if duplicate_policy not in ("average", "a", "b"):
             raise HTTPException(
@@ -112,6 +117,8 @@ def create_app() -> FastAPI:
         except UnicodeDecodeError as e:
             raise HTTPException(status_code=400, detail="Файлы должны быть в UTF-8") from e
 
+        full_plot = _form_bool(full_resolution_plot)
+
         try:
             payload = build_merge_response(
                 raw_a,
@@ -120,7 +127,8 @@ def create_app() -> FastAPI:
                 show_a=sa,
                 show_b=sb,
                 show_result=sr,
-                max_plot_points=max_plot_points(),
+                max_plot_points=0 if full_plot else max_plot_points(),
+                full_resolution_plot=full_plot,
             )
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e)) from e

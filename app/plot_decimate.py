@@ -50,6 +50,8 @@ def for_plot(
 ) -> tuple[list[float], list[float], bool]:
     """Возвращает (freqs, ampls, был_ли_прорежен)."""
     cap = max_points if max_points is not None else max_plot_points()
+    if cap <= 0:
+        return freqs, ampls, False
     if len(freqs) <= cap:
         return freqs, ampls, False
     f, a = decimate_minmax(freqs, ampls, cap)

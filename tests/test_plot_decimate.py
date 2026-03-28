@@ -26,6 +26,16 @@ class PlotDecimateTests(unittest.TestCase):
         self.assertLessEqual(len(out_f), 6)
         self.assertEqual(len(out_f), len(out_a))
 
+    def test_zero_cap_disables_decimation(self) -> None:
+        freqs = [float(i) for i in range(20)]
+        ampls = [float(i) for i in range(20)]
+
+        out_f, out_a, decimated = for_plot(freqs, ampls, max_points=0)
+
+        self.assertEqual(out_f, freqs)
+        self.assertEqual(out_a, ampls)
+        self.assertFalse(decimated)
+
 
 if __name__ == "__main__":
     unittest.main()

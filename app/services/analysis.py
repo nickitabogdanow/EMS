@@ -16,6 +16,7 @@ def build_subtract_response(
     show_result: bool,
     highlight_threshold: float,
     max_plot_points: int,
+    full_resolution_plot: bool = False,
 ) -> dict:
     map_a = parse_csv(raw_a)
     map_b = parse_csv(raw_b)
@@ -73,6 +74,7 @@ def build_subtract_response(
         "plot_decimated": plot_decimated,
         "plot_max_points": max_plot_points,
         "plot_trace_points": plot_pts,
+        "plot_full_resolution": full_resolution_plot,
     }
 
 
@@ -85,6 +87,7 @@ def build_merge_response(
     show_b: bool,
     show_result: bool,
     max_plot_points: int,
+    full_resolution_plot: bool = False,
 ) -> dict:
     map_a = parse_csv(raw_a)
     map_b = parse_csv(raw_b)
@@ -134,4 +137,5 @@ def build_merge_response(
         "plot_decimated": plot_decimated,
         "plot_max_points": max_plot_points,
         "plot_trace_points": plot_pts,
+        "plot_full_resolution": full_resolution_plot,
     }

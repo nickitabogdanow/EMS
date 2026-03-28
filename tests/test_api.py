@@ -60,6 +60,32 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(payload["result_csv"], "freq,ampl\n10.0,5.0\n20.0,6.0\n30.0,6.0")
         self.assertIn("figure", payload)
 
+    def test_analyze_can_disable_plot_decimation(self) -> None:
+        rows_a = "freq,ampl\n" + "\n".join(f"{i},{i}" for i in range(2500)) + "\n"
+        rows_b = "freq,ampl\n" + "\n".join(f"{i},{i - 1}" for i in range(2500)) + "\n"
+
+        response = self.client.post(
+            "/api/analyze",
+            data={
+                "operation": "a_minus_b",
+                "show_a": "false",
+                "show_b": "false",
+                "show_result": "true",
+                "highlight_threshold": "0",
+                "full_resolution_plot": "true",
+            },
+            files={
+                "file_a": ("a.csv", rows_a.encode("utf-8"), "text/csv"),
+                "file_b": ("b.csv", rows_b.encode("utf-8"), "text/csv"),
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertFalse(payload["plot_decimated"])
+        self.assertTrue(payload["plot_full_resolution"])
+        self.assertEqual(payload["plot_trace_points"], 2500)
+
 
 if __name__ == "__main__":
     unittest.main()

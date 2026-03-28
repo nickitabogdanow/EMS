@@ -14,6 +14,8 @@ def max_plot_points() -> int:
         n = int(raw)
     except ValueError:
         return 14000
+    if n <= 0:
+        return 0
     return max(2000, min(n, 500_000))
 
 
