@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3b1912"/>
+      <stop offset="100%" stop-color="#190f0c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <g fill="#f97316" opacity="0.25">
+    <circle cx="180" cy="160" r="90"/>
+    <circle cx="920" cy="170" r="120"/>
+    <circle cx="660" cy="310" r="80"/>
+  </g>
+  <g fill="#fb923c" opacity="0.55">
+    <path d="M120 760 C200 620, 300 610, 360 740 S540 840, 620 720 S770 600, 850 740 S1030 840, 1120 700 L1200 800 L0 800 Z"/>
+    <path d="M0 800 L0 690 C100 720, 170 620, 260 680 S460 760, 530 650 S700 610, 790 700 S980 770, 1200 690 L1200 800 Z"/>
+  </g>
+  <g fill="#fdba74" opacity="0.78">
+    <ellipse cx="220" cy="705" rx="50" ry="26"/>
+    <ellipse cx="520" cy="660" rx="66" ry="30"/>
+    <ellipse cx="810" cy="720" rx="58" ry="26"/>
+    <ellipse cx="1030" cy="680" rx="64" ry="28"/>
+  </g>
+  <path d="M0 540 C180 500, 390 590, 600 530 S1000 500, 1200 560" fill="none" stroke="#ef4444" stroke-width="16" opacity="0.32"/>
+</svg>

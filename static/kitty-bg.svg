@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff7fb"/>
+      <stop offset="100%" stop-color="#fdf2f8"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <circle cx="180" cy="130" r="120" fill="url(#glow)" opacity="0.55"/>
+  <circle cx="1010" cy="150" r="120" fill="url(#glow)" opacity="0.4"/>
+
+  <g transform="translate(85,92)" opacity="0.96">
+    <circle cx="210" cy="190" r="120" fill="#ffffff"/>
+    <polygon points="135,120 182,34 232,125" fill="#ffffff"/>
+    <polygon points="188,120 250,30 286,132" fill="#ffffff"/>
+    <polygon points="148,113 180,58 214,118" fill="#fbcfe8"/>
+    <polygon points="204,114 247,56 270,124" fill="#fbcfe8"/>
+    <circle cx="175" cy="186" r="11" fill="#db2777"/>
+    <circle cx="245" cy="186" r="11" fill="#db2777"/>
+    <ellipse cx="210" cy="228" rx="20" ry="13" fill="#f9a8d4"/>
+    <path d="M205 242 q5 9 14 0" stroke="#db2777" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M122 224 H180 M242 224 H300 M122 252 H182 M240 252 H300" stroke="#f472b6" stroke-width="8" stroke-linecap="round"/>
+    <path d="M184 86 q26 -24 52 0 q-5 30 -26 30 q-20 0 -26 -30z" fill="#ec4899"/>
+    <circle cx="197" cy="92" r="7" fill="#fdf2f8"/>
+    <circle cx="223" cy="92" r="7" fill="#fdf2f8"/>
+  </g>
+
+  <g fill="#fbcfe8" opacity="0.78">
+    <path d="M820 170c-14-21-47-17-57 7c-10 25 7 47 57 81c50-34 67-56 57-81c-10-24-43-28-57-7z"/>
+    <path d="M944 520c-13-19-42-15-50 6c-9 22 6 41 50 70c44-29 59-48 50-70c-8-21-37-25-50-6z"/>
+    <path d="M430 612c-11-17-38-14-46 5c-8 20 6 38 46 64c40-26 54-44 46-64c-8-19-35-22-46-5z"/>
+  </g>
+
+  <g fill="#ffffff" opacity="0.84">
+    <circle cx="960" cy="134" r="44"/>
+    <circle cx="1010" cy="176" r="34"/>
+    <circle cx="1060" cy="132" r="40"/>
+  </g>
+
+  <g fill="#f9a8d4" opacity="0.44">
+    <circle cx="900" cy="620" r="22"/>
+    <circle cx="940" cy="590" r="18"/>
+    <circle cx="980" cy="620" r="22"/>
+    <circle cx="920" cy="652" r="18"/>
+    <circle cx="960" cy="652" r="18"/>
+  </g>
+</svg>

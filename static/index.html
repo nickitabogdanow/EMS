@@ -7,7 +7,31 @@
   <script>
     try {
       var _ems_t = localStorage.getItem("ems_theme");
-      if (_ems_t === "light" || _ems_t === "barbie" || _ems_t === "unicorn") {
+      var _ems_unlock = parseInt(localStorage.getItem("ems_theme_unlock_level") || "0", 10);
+      var _ems_allowed = ["light"];
+      if (_ems_unlock >= 1) {
+        _ems_allowed.push("barbie", "unicorn");
+      }
+      if (_ems_unlock >= 2) {
+        _ems_allowed.push(
+          "synthwave",
+          "space",
+          "ocean",
+          "forest",
+          "sunset",
+          "cyberpunk",
+          "candy",
+          "kitty",
+          "pixel",
+          "matrix",
+          "lava",
+          "ice",
+          "galaxy-pop",
+          "sakura",
+          "vaporwave"
+        );
+      }
+      if (_ems_allowed.indexOf(_ems_t) >= 0) {
         document.documentElement.setAttribute("data-theme", _ems_t);
       }
     } catch (e) {}
@@ -25,11 +49,27 @@
     <label class="theme-picker" for="theme-select">
       <span class="theme-picker-label">Тема</span>
       <select id="theme-select" aria-label="Тема оформления">
-        <option value="dark">Тёмная</option>
-        <option value="light">Светлая</option>
-        <option value="barbie">Barbie</option>
-        <option value="unicorn">Единороги</option>
+        <option value="dark" data-theme-level="0">Тёмная</option>
+        <option value="light" data-theme-level="0">Светлая</option>
+        <option value="barbie" data-theme-level="1">Barbie</option>
+        <option value="unicorn" data-theme-level="1">Единороги</option>
+        <option value="synthwave" data-theme-level="2">Synthwave</option>
+        <option value="space" data-theme-level="2">Space</option>
+        <option value="ocean" data-theme-level="2">Ocean</option>
+        <option value="forest" data-theme-level="2">Forest</option>
+        <option value="sunset" data-theme-level="2">Sunset</option>
+        <option value="cyberpunk" data-theme-level="2">Cyberpunk</option>
+        <option value="candy" data-theme-level="2">Candy</option>
+        <option value="kitty" data-theme-level="2">Kitty</option>
+        <option value="pixel" data-theme-level="2">Pixel</option>
+        <option value="matrix" data-theme-level="2">Matrix</option>
+        <option value="lava" data-theme-level="2">Lava</option>
+        <option value="ice" data-theme-level="2">Ice</option>
+        <option value="galaxy-pop" data-theme-level="2">Galaxy Pop</option>
+        <option value="sakura" data-theme-level="2">Sakura</option>
+        <option value="vaporwave" data-theme-level="2">Vaporwave</option>
       </select>
+      <button type="button" id="theme-reset-secrets" class="theme-reset hidden">Сбросить пасхалки</button>
     </label>
   </div>
 

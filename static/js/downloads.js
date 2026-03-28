@@ -53,14 +53,26 @@
     payload = payload.replace(/</g, "\\u003c");
 
     const theme = typeof EMS.getTheme === "function" ? EMS.getTheme() : "dark";
-    const pageBg =
-      theme === "light"
-        ? "#f8fafc"
-        : theme === "barbie"
-          ? "#fdf2f8"
-          : theme === "unicorn"
-            ? "#ede9fe"
-            : "#0f1419";
+    const pageBg = {
+      light: "#f8fafc",
+      barbie: "#fdf2f8",
+      unicorn: "#ede9fe",
+      synthwave: "#120f26",
+      space: "#08101f",
+      ocean: "#dffaf6",
+      forest: "#102218",
+      sunset: "#fff1e6",
+      cyberpunk: "#090b14",
+      candy: "#fff7fb",
+      kitty: "#fff7fb",
+      pixel: "#1b1c34",
+      matrix: "#020703",
+      lava: "#190f0c",
+      ice: "#eefbff",
+      "galaxy-pop": "#140f28",
+      sakura: "#fff7fb",
+      vaporwave: "#fff0fb",
+    }[theme] || "#0f1419";
 
     return (
       "<!DOCTYPE html>\n" +

@@ -426,9 +426,34 @@
     });
   }
 
+  function initThemeEasterEggs() {
+    window.addEventListener("ems:themes-unlocked", (event) => {
+      const level = event && event.detail ? event.detail.level : 0;
+      if (level === 1) {
+        setMessage(
+          'Пасхалка уровня 1 открыта: теперь доступны темы <strong>Barbie</strong> и <strong>Единороги</strong>. Для уровня 2 быстро нажмите <strong>5 раз</strong> по слову <strong>"Тема"</strong>.',
+          "ok"
+        );
+        return;
+      }
+      if (level === 2) {
+        setMessage(
+          "Пасхалка уровня 2 открыта: теперь доступны все секретные темы.",
+          "ok"
+        );
+      }
+    });
+    window.addEventListener("ems:themes-reset", (event) => {
+      const previousLevel = event && event.detail ? event.detail.previousLevel : 0;
+      const suffix = previousLevel >= 2 ? " Оба уровня пасхалок скрыты." : " Пасхалки снова скрыты.";
+      setMessage("Секретные темы сброшены." + suffix, "ok");
+    });
+  }
+
   function initApp() {
     initProtocolWarning();
     EMS.initThemeControls();
+    initThemeEasterEggs();
     initFileDrop();
     initDownloads();
 

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#22c55e" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="#020703"/>
+  <g stroke="#14532d" stroke-width="2" opacity="0.18">
+    <line x1="100" y1="0" x2="100" y2="800"/>
+    <line x1="240" y1="0" x2="240" y2="800"/>
+    <line x1="380" y1="0" x2="380" y2="800"/>
+    <line x1="520" y1="0" x2="520" y2="800"/>
+    <line x1="660" y1="0" x2="660" y2="800"/>
+    <line x1="800" y1="0" x2="800" y2="800"/>
+    <line x1="940" y1="0" x2="940" y2="800"/>
+    <line x1="1080" y1="0" x2="1080" y2="800"/>
+  </g>
+  <g font-family="monospace" font-size="28" text-anchor="middle">
+    <text x="100" y="110" fill="#86efac" opacity="0.85">0 1 1 0</text>
+    <text x="100" y="210" fill="#22c55e" opacity="0.42">1 0 1 1</text>
+    <text x="100" y="310" fill="#22c55e" opacity="0.28">0 1 0 1</text>
+
+    <text x="240" y="80" fill="#86efac" opacity="0.85">1 0 1 0</text>
+    <text x="240" y="180" fill="#22c55e" opacity="0.5">1 1 0 0</text>
+    <text x="240" y="280" fill="#22c55e" opacity="0.3">0 1 1 1</text>
+
+    <text x="380" y="140" fill="#bbf7d0" opacity="0.88">1 1 0 1</text>
+    <text x="380" y="240" fill="#22c55e" opacity="0.48">0 1 0 0</text>
+    <text x="380" y="340" fill="#22c55e" opacity="0.28">1 0 1 1</text>
+
+    <text x="660" y="100" fill="#bbf7d0" opacity="0.88">0 1 0 1</text>
+    <text x="660" y="200" fill="#22c55e" opacity="0.5">1 1 0 0</text>
+    <text x="660" y="300" fill="#22c55e" opacity="0.28">0 0 1 1</text>
+
+    <text x="940" y="150" fill="#86efac" opacity="0.88">1 0 1 0</text>
+    <text x="940" y="250" fill="#22c55e" opacity="0.5">1 1 1 0</text>
+    <text x="940" y="350" fill="#22c55e" opacity="0.28">0 1 0 1</text>
+
+    <text x="1080" y="120" fill="#bbf7d0" opacity="0.88">0 0 1 1</text>
+    <text x="1080" y="220" fill="#22c55e" opacity="0.48">1 0 1 0</text>
+    <text x="1080" y="320" fill="#22c55e" opacity="0.26">1 1 0 1</text>
+  </g>
+  <g opacity="0.34">
+    <rect x="80" y="0" width="40" height="360" fill="url(#glow)"/>
+    <rect x="220" y="0" width="40" height="320" fill="url(#glow)"/>
+    <rect x="360" y="0" width="40" height="390" fill="url(#glow)"/>
+    <rect x="640" y="0" width="40" height="350" fill="url(#glow)"/>
+    <rect x="920" y="0" width="40" height="400" fill="url(#glow)"/>
+    <rect x="1060" y="0" width="40" height="360" fill="url(#glow)"/>
+  </g>
+</svg>

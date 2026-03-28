@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f5d0fe"/>
+      <stop offset="60%" stop-color="#bae6fd"/>
+      <stop offset="100%" stop-color="#fff0fb"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <circle cx="600" cy="205" r="108" fill="#fff7ed" opacity="0.94"/>
+
+  <g stroke="#67e8f9" stroke-width="2" opacity="0.34">
+    <line x1="0" y1="500" x2="1200" y2="500"/>
+    <line x1="0" y1="540" x2="1200" y2="540"/>
+    <line x1="0" y1="580" x2="1200" y2="580"/>
+    <line x1="0" y1="620" x2="1200" y2="620"/>
+    <line x1="0" y1="660" x2="1200" y2="660"/>
+    <line x1="0" y1="700" x2="1200" y2="700"/>
+    <line x1="140" y1="800" x2="600" y2="500"/>
+    <line x1="300" y1="800" x2="600" y2="500"/>
+    <line x1="460" y1="800" x2="600" y2="500"/>
+    <line x1="740" y1="800" x2="600" y2="500"/>
+    <line x1="900" y1="800" x2="600" y2="500"/>
+    <line x1="1060" y1="800" x2="600" y2="500"/>
+  </g>
+
+  <g fill="#ffffff" opacity="0.8">
+    <rect x="185" y="182" width="92" height="170" rx="8"/>
+    <rect x="223" y="150" width="16" height="32"/>
+    <rect x="925" y="190" width="92" height="162" rx="8"/>
+    <rect x="963" y="160" width="16" height="30"/>
+  </g>
+
+  <g stroke="#ec4899" stroke-width="11" stroke-linecap="round" fill="none" opacity="0.74">
+    <path d="M120 470 L260 350 L360 395 L520 285 L640 350 L790 258 L950 378 L1080 318"/>
+  </g>
+
+  <g fill="none" stroke="#fdf2f8" stroke-width="7" stroke-linecap="round" opacity="0.76">
+    <path d="M180 510 L180 340"/>
+    <path d="M210 510 L210 350"/>
+    <path d="M150 510 L150 360"/>
+    <path d="M150 410 C95 390, 92 330, 150 314"/>
+    <path d="M210 404 C265 386, 270 332, 214 314"/>
+    <path d="M1020 520 L1020 360"/>
+    <path d="M1050 520 L1050 370"/>
+    <path d="M990 520 L990 380"/>
+    <path d="M990 420 C940 402, 936 350, 990 332"/>
+    <path d="M1050 414 C1104 396, 1108 350, 1054 332"/>
+  </g>
+</svg>
