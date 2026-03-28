@@ -25,3 +25,11 @@ def max_highlight_shapes() -> int:
     except ValueError:
         n = 700
     return max(50, min(n, 5000))
+
+
+def result_ttl_seconds() -> int:
+    try:
+        n = int(os.environ.get("EMS_RESULT_TTL_SECONDS", "3600").strip())
+    except ValueError:
+        n = 3600
+    return max(60, min(n, 86_400))

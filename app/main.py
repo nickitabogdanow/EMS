@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.gzip import GZipMiddleware
 
+from app.csv_utils import parse_csv_upload
 from app.config import GZIP_MINIMUM_SIZE, STATIC_DIR, max_plot_points
-from app.services.analysis import build_merge_response, build_subtract_response
+from app.services.analysis import build_merge_response_from_maps, build_subtract_response_from_maps
+from app.services.result_store import ResultExpired, ResultNotFound, result_store
 
 
 def _form_bool(v: str | bool) -> bool:
@@ -26,6 +28,15 @@ def _parse_highlight_threshold(raw: str | float) -> float:
         return float(s)
     except ValueError:
         return 5.0
+
+
+def _parse_uploaded_csv(file: UploadFile) -> dict[float, float]:
+    try:
+        return parse_csv_upload(file.file)
+    except UnicodeDecodeError as e:
+        raise HTTPException(status_code=400, detail="Файлы должны быть в UTF-8") from e
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
 
 
 def create_app() -> FastAPI:
@@ -63,18 +74,15 @@ def create_app() -> FastAPI:
                 detail="Выберите хотя бы один вариант отображения: A, B или результат.",
             )
 
-        try:
-            raw_a = (await file_a.read()).decode("utf-8")
-            raw_b = (await file_b.read()).decode("utf-8")
-        except UnicodeDecodeError as e:
-            raise HTTPException(status_code=400, detail="Файлы должны быть в UTF-8") from e
+        map_a = _parse_uploaded_csv(file_a)
+        map_b = _parse_uploaded_csv(file_b)
 
         full_plot = _form_bool(full_resolution_plot)
 
         try:
-            payload = build_subtract_response(
-                raw_a,
-                raw_b,
+            payload = build_subtract_response_from_maps(
+                map_a,
+                map_b,
                 operation=operation,
                 show_a=sa,
                 show_b=sb,
@@ -111,18 +119,15 @@ def create_app() -> FastAPI:
                 detail="Выберите хотя бы один вариант отображения: A, B или объединённый ряд.",
             )
 
-        try:
-            raw_a = (await file_a.read()).decode("utf-8")
-            raw_b = (await file_b.read()).decode("utf-8")
-        except UnicodeDecodeError as e:
-            raise HTTPException(status_code=400, detail="Файлы должны быть в UTF-8") from e
+        map_a = _parse_uploaded_csv(file_a)
+        map_b = _parse_uploaded_csv(file_b)
 
         full_plot = _form_bool(full_resolution_plot)
 
         try:
-            payload = build_merge_response(
-                raw_a,
-                raw_b,
+            payload = build_merge_response_from_maps(
+                map_a,
+                map_b,
                 duplicate_policy=duplicate_policy,
                 show_a=sa,
                 show_b=sb,
@@ -134,6 +139,21 @@ def create_app() -> FastAPI:
             raise HTTPException(status_code=400, detail=str(e)) from e
 
         return JSONResponse(payload)
+
+    @app.get("/api/download/{result_id}")
+    async def download_result(result_id: str) -> Response:
+        try:
+            filename, csv_text = result_store.get_csv(result_id)
+        except ResultExpired as e:
+            raise HTTPException(status_code=410, detail=str(e)) from e
+        except ResultNotFound as e:
+            raise HTTPException(status_code=404, detail=str(e)) from e
+
+        headers = {
+            "Content-Disposition": f'attachment; filename="{filename}"',
+            "Cache-Control": "no-store",
+        }
+        return Response(content=csv_text, media_type="text/csv; charset=utf-8", headers=headers)
 
     return app
 

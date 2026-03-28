@@ -4,7 +4,7 @@
   /** @type {{ id: string, file: File }[]} */
   let library = [];
   let fileIdSeq = 0;
-  let lastResultCsv = "";
+  let lastDownloadUrl = "";
   let lastDownloadFilename = "result.csv";
 
   function isMergeMode() {
@@ -44,11 +44,11 @@
       library.some((item) => item.id === idB);
 
     document.getElementById("compute").disabled = !validPair;
-    document.getElementById("download").disabled = !lastResultCsv;
+    document.getElementById("download").disabled = !lastDownloadUrl;
     document.getElementById("download-html").disabled = !chartHasData();
 
     const downloadButton = document.getElementById("download");
-    downloadButton.textContent = lastResultCsv
+    downloadButton.textContent = lastDownloadUrl
       ? "Скачать " + lastDownloadFilename
       : "Скачать CSV";
   }
@@ -186,7 +186,7 @@
     renderList();
     syncSelects();
     setMessage("");
-    lastResultCsv = "";
+    lastDownloadUrl = "";
     lastDownloadFilename = "result.csv";
     updateButtons();
   }
@@ -278,7 +278,8 @@
 
     let plotNote = "";
     if (data.plot_full_resolution) {
-      plotNote = " <strong>График показан без прореживания</strong>: на график отправлены все точки.";
+      plotNote =
+        " <strong>График показан без прореживания</strong>: на график отправлены все точки. Для больших CSV это может заметно нагрузить браузер.";
     } else if (data.plot_decimated) {
       plotNote =
         " <strong>График упрощён</strong> для скорости (до ~" +
@@ -288,7 +289,11 @@
         "</strong>). В CSV — все точки.";
     }
 
-    return detail + extra + plotNote;
+    const downloadNote = data.result_download_url
+      ? " CSV готов к скачиванию отдельным запросом."
+      : "";
+
+    return detail + extra + plotNote + downloadNote;
   }
 
   async function handleCompute() {
@@ -312,7 +317,7 @@
         : await EMS.requestAnalyze(formData);
 
       if (!result.ok) {
-        lastResultCsv = "";
+        lastDownloadUrl = "";
         lastDownloadFilename = "result.csv";
         setMessage(result.error, "");
         if (typeof EMS.purgeChart === "function") {
@@ -323,15 +328,15 @@
       }
 
       const data = result.data;
-      lastResultCsv = data.result_csv || "";
-      lastDownloadFilename = data.mode === "merge" ? "merged.csv" : "result.csv";
+      lastDownloadUrl = data.result_download_url || "";
+      lastDownloadFilename = data.result_filename || (data.mode === "merge" ? "merged.csv" : "result.csv");
       setMessage(buildSuccessMessage(data), "ok");
 
       if (data.figure) {
         await EMS.renderFigure(data.figure);
       }
     } catch (error) {
-      lastResultCsv = "";
+      lastDownloadUrl = "";
       lastDownloadFilename = "result.csv";
       setMessage(String(error.message || error), "");
       if (typeof EMS.purgeChart === "function") {
@@ -402,11 +407,15 @@
   }
 
   function initDownloads() {
-    document.getElementById("download").addEventListener("click", () => {
-      if (!lastResultCsv) {
+    document.getElementById("download").addEventListener("click", async () => {
+      if (!lastDownloadUrl) {
         return;
       }
-      EMS.downloadCsv(lastResultCsv, lastDownloadFilename);
+      try {
+        await EMS.downloadCsvFromUrl(lastDownloadUrl, lastDownloadFilename);
+      } catch (error) {
+        setMessage(String(error.message || error), "");
+      }
     });
 
     document.getElementById("download-html").addEventListener("click", () => {

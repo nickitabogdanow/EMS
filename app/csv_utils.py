@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import csv
 import io
+from itertools import chain
 from dataclasses import dataclass
+from typing import BinaryIO, TextIO
 
 
 @dataclass
@@ -23,20 +25,13 @@ class MergeResult:
     duplicate_freqs: int
 
 
-def parse_csv(text: str) -> dict[float, float]:
-    text = text.strip()
-    if not text:
-        raise ValueError("Пустой файл.")
-
-    sample = text.splitlines()[0] if text else ""
-    delim = ";" if ";" in sample and "," not in sample else ","
-
-    reader = csv.reader(io.StringIO(text), delimiter=delim)
-    rows = list(reader)
-    if len(rows) < 2:
+def _parse_csv_reader(reader: csv.reader) -> dict[float, float]:
+    header_row = next(reader, None)
+    first_data_row = next(reader, None)
+    if header_row is None or first_data_row is None:
         raise ValueError("В файле нет данных (нужен заголовок и хотя бы одна строка).")
 
-    header = [h.strip().lower() for h in rows[0]]
+    header = [h.strip().lower() for h in header_row]
 
     def col_index(*names: str) -> int:
         for i, h in enumerate(header):
@@ -50,7 +45,7 @@ def parse_csv(text: str) -> dict[float, float]:
         raise ValueError("Ожидаются колонки freq и ampl (допустимы frequency, amplitude).")
 
     out: dict[float, float] = {}
-    for parts in rows[1:]:
+    for parts in chain([first_data_row], reader):
         if len(parts) <= max(fi, ai):
             continue
         try:
@@ -63,6 +58,33 @@ def parse_csv(text: str) -> dict[float, float]:
     if not out:
         raise ValueError("Не удалось прочитать ни одной числовой строки.")
     return out
+
+
+def _parse_csv_text_stream(stream: TextIO, sample: str) -> dict[float, float]:
+    reader = csv.reader(stream, delimiter="," if "," in sample or ";" not in sample else ";")
+    return _parse_csv_reader(reader)
+
+
+def parse_csv(text: str) -> dict[float, float]:
+    text = text.strip()
+    if not text:
+        raise ValueError("Пустой файл.")
+
+    sample = text.partition("\n")[0]
+    return _parse_csv_text_stream(io.StringIO(text), sample)
+
+
+def parse_csv_upload(file_obj: BinaryIO) -> dict[float, float]:
+    file_obj.seek(0)
+    text_stream = io.TextIOWrapper(file_obj, encoding="utf-8", newline="")
+    try:
+        sample = text_stream.readline().strip()
+        if not sample:
+            raise ValueError("Пустой файл.")
+        text_stream.seek(0)
+        return _parse_csv_text_stream(text_stream, sample)
+    finally:
+        text_stream.detach()
 
 
 def sorted_series(m: dict[float, float]) -> tuple[list[float], list[float]]:

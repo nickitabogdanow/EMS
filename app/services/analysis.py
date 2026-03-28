@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from app.csv_utils import merge_series, parse_csv, result_to_csv, sorted_series, subtract
+from app.csv_utils import merge_series, parse_csv, sorted_series, subtract
 from app.highlight import diff_highlight_shapes
 from app.plot_decimate import for_plot
 from app.plot_figure import build_figure
+from app.services.result_store import result_store
 
 
 def build_subtract_response(
@@ -20,6 +21,31 @@ def build_subtract_response(
 ) -> dict:
     map_a = parse_csv(raw_a)
     map_b = parse_csv(raw_b)
+    return build_subtract_response_from_maps(
+        map_a,
+        map_b,
+        operation=operation,
+        show_a=show_a,
+        show_b=show_b,
+        show_result=show_result,
+        highlight_threshold=highlight_threshold,
+        max_plot_points=max_plot_points,
+        full_resolution_plot=full_resolution_plot,
+    )
+
+
+def build_subtract_response_from_maps(
+    map_a: dict[float, float],
+    map_b: dict[float, float],
+    *,
+    operation: str,
+    show_a: bool,
+    show_b: bool,
+    show_result: bool,
+    highlight_threshold: float,
+    max_plot_points: int,
+    full_resolution_plot: bool = False,
+) -> dict:
 
     a_minus_b = operation == "a_minus_b"
     sub = subtract(map_a, map_b, a_minus_b=a_minus_b)
@@ -54,7 +80,12 @@ def build_subtract_response(
         highlight_shapes=h_shapes or None,
     )
 
-    result_csv = result_to_csv(sub.freqs, sub.ampl) if sub.matched > 0 else ""
+    result_id = None
+    result_filename = "result.csv"
+    result_download_url = None
+    if sub.matched > 0:
+        result_id = result_store.save(sub.freqs, sub.ampl, filename=result_filename)
+        result_download_url = f"/api/download/{result_id}"
 
     return {
         "mode": "subtract",
@@ -64,7 +95,9 @@ def build_subtract_response(
         "operation": operation,
         "operation_label": op_label,
         "figure": figure,
-        "result_csv": result_csv,
+        "result_id": result_id,
+        "result_filename": result_filename,
+        "result_download_url": result_download_url,
         "points_a": len(map_a),
         "points_b": len(map_b),
         "highlight_threshold": highlight_threshold,
@@ -91,6 +124,29 @@ def build_merge_response(
 ) -> dict:
     map_a = parse_csv(raw_a)
     map_b = parse_csv(raw_b)
+    return build_merge_response_from_maps(
+        map_a,
+        map_b,
+        duplicate_policy=duplicate_policy,
+        show_a=show_a,
+        show_b=show_b,
+        show_result=show_result,
+        max_plot_points=max_plot_points,
+        full_resolution_plot=full_resolution_plot,
+    )
+
+
+def build_merge_response_from_maps(
+    map_a: dict[float, float],
+    map_b: dict[float, float],
+    *,
+    duplicate_policy: str,
+    show_a: bool,
+    show_b: bool,
+    show_result: bool,
+    max_plot_points: int,
+    full_resolution_plot: bool = False,
+) -> dict:
     merged = merge_series(map_a, map_b, on_duplicate=duplicate_policy)
 
     policy_label = {"average": "среднее A и B", "a": "значение из A", "b": "значение из B"}[
@@ -120,7 +176,12 @@ def build_merge_response(
         show_result=show_result,
     )
 
-    result_csv = result_to_csv(merged.freqs, merged.ampl) if merged.freqs else ""
+    result_id = None
+    result_filename = "merged.csv"
+    result_download_url = None
+    if merged.freqs:
+        result_id = result_store.save(merged.freqs, merged.ampl, filename=result_filename)
+        result_download_url = f"/api/download/{result_id}"
 
     return {
         "mode": "merge",
@@ -131,7 +192,9 @@ def build_merge_response(
         "only_in_a": merged.only_in_a,
         "only_in_b": merged.only_in_b,
         "figure": figure,
-        "result_csv": result_csv,
+        "result_id": result_id,
+        "result_filename": result_filename,
+        "result_download_url": result_download_url,
         "points_a": len(map_a),
         "points_b": len(map_b),
         "plot_decimated": plot_decimated,

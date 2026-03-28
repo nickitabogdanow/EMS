@@ -14,6 +14,40 @@
     downloadTextFile(content, "text/csv;charset=utf-8", filename);
   }
 
+  function formatDownloadError(detail) {
+    if (detail == null) {
+      return "Не удалось скачать CSV.";
+    }
+    if (typeof detail === "string") {
+      return detail;
+    }
+    return String(detail);
+  }
+
+  async function downloadCsvFromUrl(url, fallbackFilename) {
+    const response = await fetch(url, { method: "GET" });
+    const contentType = response.headers.get("content-type") || "";
+
+    if (!response.ok) {
+      if (contentType.includes("application/json")) {
+        const payload = await response.json();
+        throw new Error(formatDownloadError(payload.detail));
+      }
+      throw new Error(formatDownloadError(await response.text()));
+    }
+
+    const blob = await response.blob();
+    const header = response.headers.get("content-disposition") || "";
+    const match = /filename="([^"]+)"/.exec(header);
+    const filename = match ? match[1] : fallbackFilename;
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+
   function standaloneChartHtml(figure) {
     let payload = JSON.stringify(figure);
     payload = payload.replace(/</g, "\\u003c");
@@ -55,5 +89,6 @@
   }
 
   EMS.downloadCsv = downloadCsv;
+  EMS.downloadCsvFromUrl = downloadCsvFromUrl;
   EMS.downloadChartHtml = downloadChartHtml;
 })();

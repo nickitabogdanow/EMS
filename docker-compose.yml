@@ -6,6 +6,7 @@ services:
     environment:
       - EMS_MAX_PLOT_POINTS=14000
       - EMS_MAX_HIGHLIGHT_SHAPES=700
+      - EMS_RESULT_TTL_SECONDS=3600
     # Раскомментируйте, чтобы папка data на хосте была видна в контейнере (путь под Windows/Mac/Linux свой):
     # volumes:
     #   - ./data:/app/data:ro

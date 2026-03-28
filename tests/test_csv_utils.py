@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import io
 import unittest
 
-from app.csv_utils import merge_series, parse_csv, subtract
+from app.csv_utils import merge_series, parse_csv, parse_csv_upload, subtract
 
 
 class ParseCsvTests(unittest.TestCase):
@@ -23,6 +24,18 @@ class ParseCsvTests(unittest.TestCase):
 
     def test_skips_invalid_rows(self) -> None:
         parsed = parse_csv("freq,ampl\n10,1\nbroken,row\n20,2\n")
+        self.assertEqual(parsed, {10.0: 1.0, 20.0: 2.0})
+
+    def test_skips_invalid_first_data_row(self) -> None:
+        parsed = parse_csv("freq,ampl\nbroken,row\n20,2\n")
+        self.assertEqual(parsed, {20.0: 2.0})
+
+    def test_duplicate_freq_keeps_last_value(self) -> None:
+        parsed = parse_csv("freq,ampl\n10,1\n10,3\n")
+        self.assertEqual(parsed, {10.0: 3.0})
+
+    def test_parse_upload_reads_binary_stream(self) -> None:
+        parsed = parse_csv_upload(io.BytesIO(b"freq,ampl\n10,1\n20,2\n"))
         self.assertEqual(parsed, {10.0: 1.0, 20.0: 2.0})
 
 
