@@ -1,17 +1,26 @@
 (function () {
   const EMS = (window.EMS = window.EMS || {});
 
-  function formatApiError(detail) {
-    if (detail == null) {
+  function formatApiError(payload) {
+    if (payload == null) {
       return "Ошибка сервера";
     }
-    if (typeof detail === "string") {
-      return detail;
+    if (typeof payload === "string") {
+      return payload;
     }
-    if (Array.isArray(detail)) {
-      return detail.map((item) => (item && item.msg) || JSON.stringify(item)).join(" ");
+    if (payload.error && typeof payload.error.message === "string") {
+      const requestId = payload.error.request_id || payload.request_id;
+      return requestId
+        ? payload.error.message + ' <span class="meta">(request id: ' + requestId + ")</span>"
+        : payload.error.message;
     }
-    return String(detail);
+    if (typeof payload.detail === "string") {
+      return payload.detail;
+    }
+    if (Array.isArray(payload.detail)) {
+      return payload.detail.map((item) => (item && item.msg) || JSON.stringify(item)).join(" ");
+    }
+    return String(payload);
   }
 
   async function postForm(url, formData) {
@@ -35,7 +44,7 @@
         ok: false,
         nonJson: false,
         data: data,
-        error: formatApiError(data.detail),
+        error: formatApiError(data),
       };
     }
 

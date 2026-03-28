@@ -25,7 +25,11 @@ class MergeResult:
     duplicate_freqs: int
 
 
-def _parse_csv_reader(reader: csv.reader) -> dict[float, float]:
+class CsvRowsLimitExceeded(ValueError):
+    """Raised when a CSV contains more numeric rows than allowed."""
+
+
+def _parse_csv_reader(reader: csv.reader, *, max_rows: int | None = None) -> dict[float, float]:
     header_row = next(reader, None)
     first_data_row = next(reader, None)
     if header_row is None or first_data_row is None:
@@ -45,6 +49,7 @@ def _parse_csv_reader(reader: csv.reader) -> dict[float, float]:
         raise ValueError("Ожидаются колонки freq и ampl (допустимы frequency, amplitude).")
 
     out: dict[float, float] = {}
+    numeric_rows = 0
     for parts in chain([first_data_row], reader):
         if len(parts) <= max(fi, ai):
             continue
@@ -53,6 +58,9 @@ def _parse_csv_reader(reader: csv.reader) -> dict[float, float]:
             a = float(parts[ai].strip().replace(",", ".").strip('"'))
         except ValueError:
             continue
+        numeric_rows += 1
+        if max_rows is not None and numeric_rows > max_rows:
+            raise CsvRowsLimitExceeded(f"Слишком много строк CSV: максимум {max_rows}.")
         out[f] = a
 
     if not out:
@@ -60,21 +68,26 @@ def _parse_csv_reader(reader: csv.reader) -> dict[float, float]:
     return out
 
 
-def _parse_csv_text_stream(stream: TextIO, sample: str) -> dict[float, float]:
+def _parse_csv_text_stream(
+    stream: TextIO,
+    sample: str,
+    *,
+    max_rows: int | None = None,
+) -> dict[float, float]:
     reader = csv.reader(stream, delimiter="," if "," in sample or ";" not in sample else ";")
-    return _parse_csv_reader(reader)
+    return _parse_csv_reader(reader, max_rows=max_rows)
 
 
-def parse_csv(text: str) -> dict[float, float]:
+def parse_csv(text: str, *, max_rows: int | None = None) -> dict[float, float]:
     text = text.strip()
     if not text:
         raise ValueError("Пустой файл.")
 
     sample = text.partition("\n")[0]
-    return _parse_csv_text_stream(io.StringIO(text), sample)
+    return _parse_csv_text_stream(io.StringIO(text), sample, max_rows=max_rows)
 
 
-def parse_csv_upload(file_obj: BinaryIO) -> dict[float, float]:
+def parse_csv_upload(file_obj: BinaryIO, *, max_rows: int | None = None) -> dict[float, float]:
     file_obj.seek(0)
     text_stream = io.TextIOWrapper(file_obj, encoding="utf-8", newline="")
     try:
@@ -82,7 +95,7 @@ def parse_csv_upload(file_obj: BinaryIO) -> dict[float, float]:
         if not sample:
             raise ValueError("Пустой файл.")
         text_stream.seek(0)
-        return _parse_csv_text_stream(text_stream, sample)
+        return _parse_csv_text_stream(text_stream, sample, max_rows=max_rows)
     finally:
         text_stream.detach()
 

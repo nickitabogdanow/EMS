@@ -1,12 +1,27 @@
 services:
   web:
     build: .
+    restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
       - EMS_MAX_PLOT_POINTS=14000
+      - EMS_MAX_FULL_PLOT_POINTS=500000
       - EMS_MAX_HIGHLIGHT_SHAPES=700
+      - EMS_MAX_CSV_ROWS=400000
+      - EMS_MAX_UPLOAD_BYTES=20971520
+      - EMS_MAX_REQUEST_BODY_BYTES=47185920
       - EMS_RESULT_TTL_SECONDS=3600
+      - EMS_MAX_RESULT_POINTS=500000
+      - EMS_MAX_STORED_RESULTS=32
+      - EMS_MAX_STORED_POINTS_TOTAL=2000000
+      - EMS_LOG_LEVEL=INFO
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=3).read()"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     # Раскомментируйте, чтобы папка data на хосте была видна в контейнере (путь под Windows/Mac/Linux свой):
     # volumes:
     #   - ./data:/app/data:ro

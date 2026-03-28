@@ -17,6 +17,7 @@ def build_subtract_response(
     show_result: bool,
     highlight_threshold: float,
     max_plot_points: int,
+    max_full_plot_points: int,
     full_resolution_plot: bool = False,
 ) -> dict:
     map_a = parse_csv(raw_a)
@@ -30,6 +31,7 @@ def build_subtract_response(
         show_result=show_result,
         highlight_threshold=highlight_threshold,
         max_plot_points=max_plot_points,
+        max_full_plot_points=max_full_plot_points,
         full_resolution_plot=full_resolution_plot,
     )
 
@@ -44,9 +46,14 @@ def build_subtract_response_from_maps(
     show_result: bool,
     highlight_threshold: float,
     max_plot_points: int,
+    max_full_plot_points: int,
     full_resolution_plot: bool = False,
 ) -> dict:
-
+    if full_resolution_plot and max(len(map_a), len(map_b)) > max_full_plot_points:
+        raise ValueError(
+            f"Полный график разрешён только до {max_full_plot_points} точек на ряд. "
+            "Отключите режим без прореживания или уменьшите CSV."
+        )
     a_minus_b = operation == "a_minus_b"
     sub = subtract(map_a, map_b, a_minus_b=a_minus_b)
     op_label = "A − B" if a_minus_b else "B − A"
@@ -120,6 +127,7 @@ def build_merge_response(
     show_b: bool,
     show_result: bool,
     max_plot_points: int,
+    max_full_plot_points: int,
     full_resolution_plot: bool = False,
 ) -> dict:
     map_a = parse_csv(raw_a)
@@ -132,6 +140,7 @@ def build_merge_response(
         show_b=show_b,
         show_result=show_result,
         max_plot_points=max_plot_points,
+        max_full_plot_points=max_full_plot_points,
         full_resolution_plot=full_resolution_plot,
     )
 
@@ -145,8 +154,14 @@ def build_merge_response_from_maps(
     show_b: bool,
     show_result: bool,
     max_plot_points: int,
+    max_full_plot_points: int,
     full_resolution_plot: bool = False,
 ) -> dict:
+    if full_resolution_plot and max(len(map_a), len(map_b)) > max_full_plot_points:
+        raise ValueError(
+            f"Полный график разрешён только до {max_full_plot_points} точек на ряд. "
+            "Отключите режим без прореживания или уменьшите CSV."
+        )
     merged = merge_series(map_a, map_b, on_duplicate=duplicate_policy)
 
     policy_label = {"average": "среднее A и B", "a": "значение из A", "b": "значение из B"}[
