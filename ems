@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$ROOT"
+
+if [[ -x "$ROOT/.venv/bin/python" ]]; then
+  exec "$ROOT/.venv/bin/python" "$ROOT/run.py"
+fi
+if command -v python3 >/dev/null 2>&1; then
+  exec python3 "$ROOT/run.py"
+fi
+echo "Не найден Python: создайте venv (python3 -m venv .venv && .venv/bin/pip install -r requirements.txt) или установите python3." >&2
+exit 1

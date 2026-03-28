@@ -1,0 +1,8 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    # Раскомментируйте, чтобы папка data на хосте была видна в контейнере (путь под Windows/Mac/Linux свой):
+    # volumes:
+    #   - ./data:/app/data:ro
