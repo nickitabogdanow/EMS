@@ -36,19 +36,35 @@
 
 [data-theme="barbie"] {
   --bg: #fdf2f8;
-  --surface: #ffffff;
-  --border: #f472b6;
+  --surface: rgba(255, 255, 255, 0.88);
+  --border: rgba(244, 114, 182, 0.55);
   --text: #831843;
   --muted: #be185d;
   --accent: #db2777;
   --accent-dim: rgba(219, 39, 119, 0.14);
-  --chart-wrap-bg: #fff5fb;
+  --chart-wrap-bg: rgba(255, 245, 251, 0.92);
   --msg-err-bg: rgba(225, 29, 72, 0.1);
   --msg-err-text: #be123c;
   --msg-err-border: rgba(225, 29, 72, 0.28);
   --msg-ok-bg: rgba(236, 72, 153, 0.15);
   --msg-ok-text: #a21caf;
   --msg-ok-border: rgba(192, 38, 211, 0.35);
+}
+
+html[data-theme="barbie"] body {
+  background-color: #ffd6ea;
+  background-image: url("/static/barbie-bg.svg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+[data-theme="barbie"] .panel,
+[data-theme="barbie"] .drop {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(219, 39, 119, 0.08);
 }
 
 [data-theme="unicorn"] {
